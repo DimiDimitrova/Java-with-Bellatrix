@@ -8,6 +8,7 @@ import fakers.PersonInfoFaker;
 import pages.homePage.HomePage;
 import org.junit.jupiter.api.Test;
 import pages.productPage.ProductPage;
+import solutions.bellatrix.web.infrastructure.DriverService;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 import models.*;
 import enums.*;
