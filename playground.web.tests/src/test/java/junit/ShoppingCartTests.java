@@ -1,24 +1,24 @@
 package junit;
 
-import Pages.accountpage.AccountPage;
-import Pages.accountvoucherpage.AccountVoucherPage;
-import Pages.cartpage.CartPage;
-import Pages.checkoutpage.CheckoutPage;
-import Pages.confirmpage.ConfirmPage;
+import pages.accountPage.AccountPage;
+import pages.accountVoucherPage.AccountVoucherPage;
+import pages.cartPage.CartPage;
+import pages.checkoutPage.CheckoutPage;
+import pages.confirmPage.ConfirmPage;
 import enums.*;
 import fakers.PersonInfoFaker;
 import fakers.RecipientInfoFaker;
-import Pages.homepage.HomePage;
-import Pages.loginpage.LoginPage;
+import pages.homePage.HomePage;
+import pages.loginPage.LoginPage;
 import models.BaseEShopPage;
 import models.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import Pages.productpage.ProductPage;
+import pages.productPage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import Pages.successpage.SuccessPage;
+import pages.successPage.SuccessPage;
 
 import java.util.ArrayList;
 

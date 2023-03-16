@@ -1,10 +1,10 @@
 package models;
 
-import Sections.breadcrumbsection.BreadcrumbSection;
-import Sections.mainheadersection.MainHeaderSection;
-import Sections.mainnavigationsection.MainNavigationSection;
-import Sections.megamenusection.MegaMenuSection;
-import Sections.myaccountdropdownsection.MyAccountDropDownSection;
+import sections.breadcrumbSection.BreadcrumbSection;
+import sections.mainHeaderSection.MainHeaderSection;
+import sections.mainNavigationSection.MainNavigationSection;
+import sections.megaMenuSection.MegaMenuSection;
+import sections.myAccountDropDownSection.MyAccountDropDownSection;
 
 public class BaseEShopPage {
     public BreadcrumbSection breadcrumbSection() {

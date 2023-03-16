@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import Pages.registerpage.RegisterPage;
+import pages.registerPage.RegisterPage;
 import fakers.RecipientInfoFaker;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import Pages.successpage.SuccessPage;
+import pages.successPage.SuccessPage;
 
 public class RegistrationTests extends WebTest {
     protected RegisterPage registerPage;

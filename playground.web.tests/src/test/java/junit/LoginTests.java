@@ -1,11 +1,11 @@
 package junit;
 
-import Pages.accountpage.AccountPage;
+import pages.accountPage.AccountPage;
 import enums.MainMenu;
 import fakers.PersonInfoFaker;
 import fakers.RecipientInfoFaker;
-import Pages.homepage.HomePage;
-import Pages.loginpage.LoginPage;
+import pages.homePage.HomePage;
+import pages.loginPage.LoginPage;
 import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;

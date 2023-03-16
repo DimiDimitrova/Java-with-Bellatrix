@@ -3,12 +3,12 @@ package junit;
 import enums.Brand;
 import enums.Categories;
 import enums.CategoryInSearchBox;
-import Pages.homepage.HomePage;
+import pages.homePage.HomePage;
 import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import Pages.searchpage.SearchPage;
+import pages.searchPage.SearchPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 public class SearchTests extends WebTest {

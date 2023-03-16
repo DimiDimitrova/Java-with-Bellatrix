@@ -1,17 +1,17 @@
 package junit;
 
-import Pages.checkoutpage.CheckoutPage;
-import Pages.confirmpage.ConfirmPage;
+import pages.checkoutPage.CheckoutPage;
+import pages.confirmPage.ConfirmPage;
 import extensions.ConvertExtension;
 import fakers.PaymentAddressFaker;
 import fakers.PersonInfoFaker;
-import Pages.homepage.HomePage;
+import pages.homePage.HomePage;
 import org.junit.jupiter.api.Test;
-import Pages.productpage.ProductPage;
+import pages.productPage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 import models.*;
 import enums.*;
-import Pages.successpage.SuccessPage;
+import pages.successPage.SuccessPage;
 
 import java.util.ArrayList;
 

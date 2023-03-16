@@ -1,14 +1,14 @@
 package junit;
 
-import Pages.cartpage.CartPage;
-import Pages.checkoutpage.CheckoutPage;
+import pages.cartPage.CartPage;
+import pages.checkoutPage.CheckoutPage;
 import enums.Brand;
 import enums.Item;
-import Pages.homepage.HomePage;
+import pages.homePage.HomePage;
 import models.Product;
 import org.junit.jupiter.api.Test;
-import Pages.productpage.ProductPage;
-import Pages.quickviewpage.QuickViewPage;
+import pages.productPage.ProductPage;
+import pages.quickViewPage.QuickViewPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 import java.util.ArrayList;

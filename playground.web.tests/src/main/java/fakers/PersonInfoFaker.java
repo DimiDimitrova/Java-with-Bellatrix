@@ -2,7 +2,7 @@ package fakers;
 
 import com.github.javafaker.Faker;
 import configuration.LambdaTestSettings;
-import Pages.registerpage.PersonInfo;
+import pages.registerPage.PersonInfo;
 import solutions.bellatrix.core.configuration.ConfigurationService;
 import solutions.bellatrix.core.utilities.SecretsResolver;
 

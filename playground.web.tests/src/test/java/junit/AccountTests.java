@@ -1,23 +1,23 @@
 package junit;
 
-import Pages.accountOrderPage.AccountOrderPage;
-import Pages.accountpage.AccountPage;
-import Pages.accountvoucherpage.AccountVoucherPage;
-import Pages.changepasswordpage.ChangePasswordPage;
-import Pages.editaccountpage.EditAccountPage;
+import pages.accountOrderPage.AccountOrderPage;
+import pages.accountPage.AccountPage;
+import pages.accountVoucherPage.AccountVoucherPage;
+import pages.changePasswordPage.ChangePasswordPage;
+import pages.editAccountPage.EditAccountPage;
 import enums.*;
 import facadepattern.PurchaseVoucherFacade;
 import fakers.PersonInfoFaker;
 import fakers.RecipientInfoFaker;
-import Pages.loginpage.LoginPage;
+import pages.loginPage.LoginPage;
 import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
-import Pages.registerpage.RegisterPage;
+import pages.registerPage.RegisterPage;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import Pages.successpage.SuccessPage;
+import pages.successPage.SuccessPage;
 
 public class AccountTests extends WebTest {
     protected RecipientInfoFaker recipientInfoFaker;

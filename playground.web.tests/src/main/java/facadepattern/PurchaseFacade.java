@@ -1,16 +1,16 @@
 package facadepattern;
 
-import Pages.cartpage.CartPage;
-import Pages.checkoutpage.CheckoutPage;
-import Pages.confirmpage.ConfirmPage;
+import pages.cartPage.CartPage;
+import pages.checkoutPage.CheckoutPage;
+import pages.confirmPage.ConfirmPage;
 import enums.Account;
 import enums.CategoryInSearchBox;
 import enums.Item;
-import Pages.homepage.HomePage;
+import pages.homePage.HomePage;
 import models.PaymentAddressInfo;
-import Pages.productpage.ProductPage;
-import Pages.registerpage.PersonInfo;
-import Pages.successpage.SuccessPage;
+import pages.productPage.ProductPage;
+import pages.registerPage.PersonInfo;
+import pages.successPage.SuccessPage;
 
 public class PurchaseFacade {
     protected HomePage homePage;

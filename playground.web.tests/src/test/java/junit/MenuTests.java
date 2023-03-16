@@ -1,12 +1,12 @@
 package junit;
 
 import enums.*;
-import Pages.homepage.HomePage;
+import pages.homePage.HomePage;
 import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import Pages.productpage.ProductPage;
+import pages.productPage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 public class MenuTests extends WebTest {

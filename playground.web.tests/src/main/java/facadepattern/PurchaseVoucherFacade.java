@@ -1,16 +1,16 @@
 package facadepattern;
 
-import Pages.accountvoucherpage.AccountVoucherPage;
+import pages.accountVoucherPage.AccountVoucherPage;
 import models.BaseEShopPage;
 import models.RecipientInfo;
-import Pages.checkoutpage.CheckoutPage;
-import Pages.confirmpage.ConfirmPage;
+import pages.checkoutPage.CheckoutPage;
+import pages.confirmPage.ConfirmPage;
 import enums.Account;
 import enums.GiftCertificate;
 import enums.MainMenu;
 import enums.MyAccountDropDown;
 import solutions.bellatrix.web.services.App;
-import Pages.successpage.SuccessPage;
+import pages.successPage.SuccessPage;
 
 public class PurchaseVoucherFacade {
     protected BaseEShopPage baseEShopPage;
