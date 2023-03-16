@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Java-with-Bellatrix.iml" filepath="$PROJECT_DIR$/.idea/Java-with-Bellatrix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.android/bellatrix.android.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.android/bellatrix.android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.android.tests/bellatrix.android.tests.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.android.tests/bellatrix.android.tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.api/bellatrix.api.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.api/bellatrix.api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.core/bellatrix.core.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.core/bellatrix.core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.desktop/bellatrix.desktop.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.desktop/bellatrix.desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.desktop.tests/bellatrix.desktop.tests.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.desktop.tests/bellatrix.desktop.tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.ios/bellatrix.ios.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.ios/bellatrix.ios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.ios.tests/bellatrix.ios.tests.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.ios.tests/bellatrix.ios.tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.layout/bellatrix.layout.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.layout/bellatrix.layout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.plugins.screenshots/bellatrix.plugins.screenshots.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.plugins.screenshots/bellatrix.plugins.screenshots.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.plugins.video/bellatrix.plugins.video.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.plugins.video/bellatrix.plugins.video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.web/bellatrix.web.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.web/bellatrix.web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BELLATRIX-Java/bellatrix.web.tests/bellatrix.web.tests.iml" filepath="$PROJECT_DIR$/BELLATRIX-Java/bellatrix.web.tests/bellatrix.web.tests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/playground.web.tests/playground.web.tests.iml" filepath="$PROJECT_DIR$/playground.web.tests/playground.web.tests.iml" />
+    </modules>
+  </component>
+</project>

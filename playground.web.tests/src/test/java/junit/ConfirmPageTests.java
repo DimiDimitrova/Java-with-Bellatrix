@@ -1,39 +1,43 @@
 package junit;
 
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
+import Pages.checkoutpage.CheckoutPage;
+import Pages.confirmpage.ConfirmPage;
 import extensions.ConvertExtension;
-import generatefakerdata.FakerDataGenerator;
-import homepage.HomePage;
+import fakers.PaymentAddressFaker;
+import fakers.PersonInfoFaker;
+import Pages.homepage.HomePage;
 import org.junit.jupiter.api.Test;
-import productpage.ProductPage;
+import Pages.productpage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import successpage.SuccessPage;
 import models.*;
 import enums.*;
+import Pages.successpage.SuccessPage;
 
 import java.util.ArrayList;
 
 public class ConfirmPageTests extends WebTest {
-    private HomePage homePage;
-    private ProductPage productPage;
-    private CheckoutPage checkoutPage;
-    private ConfirmPage confirmPage;
-    private SuccessPage successPage;
-    private FakerDataGenerator generator;
+    protected SuccessPage successPage;
+    protected HomePage homePage;
+    protected ProductPage productPage;
+    protected CheckoutPage checkoutPage;
+    protected ConfirmPage confirmPage;
+    protected PersonInfoFaker personInfoFaker;
+    protected PaymentAddressFaker paymentAddressFaker;
 
-    public ConfirmPageTests() {
-        successPage = new SuccessPage();
-        homePage = new HomePage();
-        productPage = new ProductPage();
-        checkoutPage = new CheckoutPage();
-        confirmPage = new ConfirmPage();
-        generator = new FakerDataGenerator();
+    @Override
+    protected void configure() {
+        super.configure();
+        homePage = app().create(HomePage.class);
+        productPage = app().create(ProductPage.class);
+        checkoutPage = app().create(CheckoutPage.class);
+        confirmPage = app().create(ConfirmPage.class);
+        successPage = app().create(SuccessPage.class);
+        personInfoFaker = new PersonInfoFaker();
+        paymentAddressFaker = new PaymentAddressFaker();
     }
 
     @Test
     public void ProductInformationIsInConfirmPageCorrectly() {
-        var person = generator.getRegisteredUser();
         var paymentAddress = new PaymentAddressInfo();
 
         homePage.searchByManufacturer(Brand.APPLE);
@@ -43,7 +47,7 @@ public class ConfirmPageTests extends WebTest {
         products.add(product);
         productPage.map().buyNowButton().click();
 
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.LOGIN);
+        checkoutPage.fillAccountDetails(personInfoFaker.getRegisteredUser(), paymentAddress, Account.LOGIN);
         checkoutPage.continuePurchase();
 
         confirmPage.asserts().assertProductContentIsCorrect(products);
@@ -51,7 +55,6 @@ public class ConfirmPageTests extends WebTest {
 
     @Test
     public void TotalSumIsCorrect() {
-        var person = generator.getRegisteredUser();
         var paymentAddress = new PaymentAddressInfo();
 
         homePage.searchByManufacturer(Brand.APPLE);
@@ -59,7 +62,7 @@ public class ConfirmPageTests extends WebTest {
         productPage.map().buyNowButton().click();
 
         var totalInCheckout = ConvertExtension.getAmount(checkoutPage.map().total().getText());
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.LOGIN);
+        checkoutPage.fillAccountDetails(personInfoFaker.getRegisteredUser(), paymentAddress, Account.LOGIN);
         checkoutPage.asserts().assertTotalPriceIsCorrect();
         checkoutPage.continuePurchase();
 
@@ -68,14 +71,13 @@ public class ConfirmPageTests extends WebTest {
 
     @Test
     public void PaymentAddressIsCorrect() {
-        var person = generator.createPersonInfo();
-        var paymentAddress = generator.createPaymentAddress();
+        var paymentAddress = paymentAddressFaker.createPaymentAddress();
 
         homePage.searchByManufacturer(Brand.APPLE);
         productPage.map().imageItem(Item.MAC_BOOK_PRO).click();
         productPage.map().buyNowButton().click();
 
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.GUEST_ACCOUNT);
+        checkoutPage.fillAccountDetails(personInfoFaker.createPersonInfo(), paymentAddress, Account.GUEST_ACCOUNT);
         checkoutPage.continuePurchase();
 
         confirmPage.asserts().assertPaymentInfo(paymentAddress);
@@ -83,13 +85,12 @@ public class ConfirmPageTests extends WebTest {
 
     @Test
     public void EditOrderSuccessfully() {
-        var person = generator.getRegisteredUser();
         var paymentAddress = new PaymentAddressInfo();
 
         homePage.searchByManufacturer(Brand.APPLE);
         productPage.map().imageItem(Item.MAC_BOOK_PRO).click();
         productPage.map().buyNowButton().click();
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.LOGIN);
+        checkoutPage.fillAccountDetails(personInfoFaker.getRegisteredUser(), paymentAddress, Account.LOGIN);
         checkoutPage.continuePurchase();
 
         confirmPage.asserts().confirmPageIsLoaded();
@@ -106,14 +107,13 @@ public class ConfirmPageTests extends WebTest {
 
     @Test
     public void ConfirmOrderSuccessfully() {
-        var person = generator.getRegisteredUser();
         var paymentAddress = new PaymentAddressInfo();
 
         homePage.searchByManufacturer(Brand.APPLE);
         productPage.map().imageItem(Item.MAC_BOOK_PRO).click();
         productPage.map().buyNowButton().click();
 
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.LOGIN);
+        checkoutPage.fillAccountDetails(personInfoFaker.getRegisteredUser(), paymentAddress, Account.LOGIN);
         checkoutPage.continuePurchase();
         confirmPage.map().confirmOrderButton().click();
 
@@ -122,14 +122,13 @@ public class ConfirmPageTests extends WebTest {
 
     @Test
     public void ContinueSuccessfullyAfterConfirmPurchase() {
-        var person = generator.getRegisteredUser();
         var paymentAddress = new PaymentAddressInfo();
 
         homePage.searchByManufacturer(Brand.APPLE);
         productPage.map().imageItem(Item.MAC_BOOK_PRO).click();
         productPage.map().buyNowButton().click();
 
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.LOGIN);
+        checkoutPage.fillAccountDetails(personInfoFaker.getRegisteredUser(), paymentAddress, Account.LOGIN);
         checkoutPage.continuePurchase();
         confirmPage.map().confirmOrderButton().click();
 

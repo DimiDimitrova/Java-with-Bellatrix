@@ -1,50 +1,58 @@
 package junit;
 
-import accountpage.AccountPage;
-import accountvoucherpage.AccountVoucherPage;
-import cartpage.CartPage;
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
+import Pages.accountpage.AccountPage;
+import Pages.accountvoucherpage.AccountVoucherPage;
+import Pages.cartpage.CartPage;
+import Pages.checkoutpage.CheckoutPage;
+import Pages.confirmpage.ConfirmPage;
 import enums.*;
-import generatefakerdata.FakerDataGenerator;
-import homepage.HomePage;
-import loginpage.LoginPage;
-import mainheadersection.MainHeaderSection;
-import mainnavigationsection.MainNavigationSection;
+import fakers.PersonInfoFaker;
+import fakers.RecipientInfoFaker;
+import Pages.homepage.HomePage;
+import Pages.loginpage.LoginPage;
+import models.BaseEShopPage;
 import models.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import productpage.ProductPage;
+import Pages.productpage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import successpage.SuccessPage;
+import Pages.successpage.SuccessPage;
 
 import java.util.ArrayList;
 
 public class ShoppingCartTests extends WebTest {
-    private HomePage homePage;
-    private ProductPage productPage;
-    private LoginPage loginPage;
-    private CartPage cartPage;
-    private CheckoutPage checkoutPage;
-    private AccountVoucherPage accountVoucherPage;
-    private ConfirmPage confirmPage;
+    protected CheckoutPage checkoutPage;
+    protected HomePage homePage;
+    protected CartPage cartPage;
+    protected ProductPage productPage;
+    protected LoginPage loginPage;
+    protected SuccessPage successPage;
+    protected ConfirmPage confirmPage;
+    protected AccountPage accountPage;
+    protected AccountVoucherPage accountVoucherPage;
+    protected BaseEShopPage baseEShopPage;
 
-    public ShoppingCartTests() {
-        homePage = new HomePage();
-        productPage = new ProductPage();
-        loginPage = new LoginPage();
-        cartPage = new CartPage();
-        checkoutPage = new CheckoutPage();
-        accountVoucherPage = new AccountVoucherPage();
-        confirmPage = new ConfirmPage();
+    @Override
+    protected void configure() {
+        super.configure();
+        homePage = app().create(HomePage.class);
+        cartPage = app().create(CartPage.class);
+        productPage = app().create(ProductPage.class);
+        loginPage = app().create(LoginPage.class);
+        checkoutPage = app().create(CheckoutPage.class);
+        successPage = app().create(SuccessPage.class);
+        confirmPage = app().create(ConfirmPage.class);
+        accountPage = app().create(AccountPage.class);
+        accountVoucherPage = app().create(AccountVoucherPage.class);
+        baseEShopPage = new BaseEShopPage();
     }
 
     @Test
     public void openShoppingCartSuccessfully() {
-        app().goTo(HomePage.class);
-        new MainHeaderSection().map().mainHeaderNavigation(MainHeader.CART).click();
+        homePage.open();
+        baseEShopPage.mainHeaderSection().map().mainHeaderNavigation(MainHeader.CART).click();
         app().browser().waitUntilPageLoadsCompletely();
 
         cartPage.map().cartButton().click();
@@ -55,6 +63,7 @@ public class ShoppingCartTests extends WebTest {
     @Test
     public void productInformationPresentInShoppingCart() {
         homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);
+
         productPage.map().imageItem(Item.PALM_TREO_PRO).click();
         var product = productPage.setProduct();
         var products = new ArrayList<Product>();
@@ -69,8 +78,8 @@ public class ShoppingCartTests extends WebTest {
     @Test
     public void updateProductQuantityInCartSuccessfully() {
         homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);
-        productPage.map().listViewButton().click();
 
+        productPage.map().listViewButton().click();
         var product = productPage.addProductToCart(Item.SONY_VAIO);
         cartPage.map().viewCartButton().click();
         cartPage.updateProductQuantityInCart(3, product.getTitle());
@@ -82,8 +91,8 @@ public class ShoppingCartTests extends WebTest {
     public void removeProductSuccessfully() {
         homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);
         productPage.map().listViewButton().click();
-
         var product = productPage.addProductToCart(Item.SONY_VAIO);
+
         cartPage.map().viewCartButton().click();
         cartPage.map().removeButton(product.getTitle()).click();
 
@@ -159,27 +168,26 @@ public class ShoppingCartTests extends WebTest {
     @EnumSource(GiftCertificate.class)
     @ValueSource(doubles = {2, 3, 5})
     public void useGiftCertificateSuccessfullyLikeRegisteredUser(GiftCertificate gift, double amount) {
-        var registeredUser = new FakerDataGenerator().getRegisteredUser();
+        var registeredUser = new PersonInfoFaker().getRegisteredUser();
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
-        var mainNavigationSection = new MainNavigationSection();
-        mainNavigationSection.map().selectMenu(MainMenu.MY_ACCOUNT).hover();
-        mainNavigationSection.map().selectMenu(MainMenu.VOUCHER).click();
-        var recipient = new FakerDataGenerator().getRegisteredRecipients();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.MY_ACCOUNT).hover();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.VOUCHER).click();
+        var recipient = new RecipientInfoFaker().getRegisteredRecipients();
 
         accountVoucherPage.fillPurchaseGiftData(recipient, registeredUser.getLastName(), gift, amount);
         accountVoucherPage.map().continueButton().click();
-        new SuccessPage().asserts().assertVoucherIsPurchased();
+        successPage.asserts().assertVoucherIsPurchased();
 
-        new MainHeaderSection().map().mainHeaderNavigation(MainHeader.CART).click();
+        baseEShopPage.mainHeaderSection().map().mainHeaderNavigation(MainHeader.CART).click();
         cartPage.map().checkoutButtonInCart().click();
         checkoutPage.map().termsCheckbox().check();
         checkoutPage.map().continueButton().click();
         confirmPage.asserts().confirmPageIsLoaded();
         confirmPage.map().confirmOrderButton().click();
 
-        new SuccessPage().asserts().asserThatPurchaseIsMade();
+        successPage.asserts().asserThatPurchaseIsMade();
 
-        new AccountPage().openMenuFromNavbar(Navbar.LOGOUT);
+        accountPage.openMenuFromNavbar(Navbar.LOGOUT);
 
         loginPage.logIn(recipient.getRecipientEmail(), recipient.getRecipientPassword());
         homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);

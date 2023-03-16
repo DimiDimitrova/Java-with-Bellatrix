@@ -3,56 +3,67 @@ package junit;
 import enums.Brand;
 import enums.Categories;
 import enums.CategoryInSearchBox;
-import homepage.HomePage;
-import megamenusection.MegaMenuSection;
+import Pages.homepage.HomePage;
+import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import searchpage.SearchPage;
+import Pages.searchpage.SearchPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 public class SearchTests extends WebTest {
+    protected HomePage homePage;
+    protected SearchPage searchPage;
+    protected BaseEShopPage baseEShopPage;
+
+    @Override
+    protected void configure() {
+        super.configure();
+        homePage = app().create(HomePage.class);
+        searchPage = app().create(SearchPage.class);
+        baseEShopPage = new BaseEShopPage();
+    }
+
     @ParameterizedTest
     @EnumSource(CategoryInSearchBox.class)
     public void searchByCategory(CategoryInSearchBox category) {
-       // app().goTo(HomePage.class).open();
-        new HomePage().searchByCategory(category);
+        homePage.searchByCategory(category);
 
-        new SearchPage().asserts().assertBySearchedCategory(category);
+        searchPage.asserts().assertBySearchedCategory(category);
     }
 
     @ParameterizedTest
     @EnumSource(Brand.class)
     public void searchByManufacturer(Brand brand) {
-        new HomePage().searchByManufacturer(brand);
+        homePage.searchByManufacturer(brand);
 
-        new SearchPage().asserts().assertBySearchedManufacturer(brand);
+        searchPage.asserts().assertBySearchedManufacturer(brand);
     }
 
     @Test
     public void searchWithTopCategoryFilter() {
-        new HomePage().searchByTopCategory(Categories.WASHING_MACHINE);
+        homePage.searchByTopCategory(Categories.WASHING_MACHINE);
 
-        new MegaMenuSection().asserts().assertThatCategoryPresentInThePage(Categories.WASHING_MACHINE);
+        baseEShopPage.megaMenuSection().asserts().assertThatCategoryPresentInThePage(Categories.WASHING_MACHINE);
     }
 
     @Test
     public void searchWithSearchInput() {
         String search = "canon";
 
-        new HomePage().search(search);
+        homePage.search(search);
 
-        new SearchPage().asserts().assertBySearchedInput(search);
+        searchPage.asserts().assertBySearchedInput(search);
     }
 
     @Test
     public void SearchWithKeywords() {
         String search = "n";
-        app().goTo(HomePage.class);
-        new HomePage().map().searchButton().click();
+        homePage.open();
+        homePage.map().searchButton().click();
 
-        new SearchPage().searchByKeywords(search);
+        searchPage.searchByKeywords(search);
 
-        new SearchPage().asserts().assertBySearchedInput(search);
+        searchPage.asserts().assertBySearchedInput(search);
     }
 }

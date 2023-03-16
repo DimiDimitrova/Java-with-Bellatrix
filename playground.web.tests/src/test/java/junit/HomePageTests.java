@@ -1,28 +1,38 @@
 package junit;
 
 import enums.HomePageModuleTitle;
-import homepage.HomePage;
+import Pages.homepage.HomePage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import productpage.ProductPage;
+import Pages.productpage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 public class HomePageTests extends WebTest {
+    protected HomePage homePage;
+    protected ProductPage productPage;
+
+    @Override
+    protected void configure() {
+        super.configure();
+        homePage = app().create(HomePage.class);
+        productPage = app().create(ProductPage.class);
+    }
+
     @ParameterizedTest
     @EnumSource(HomePageModuleTitle.class)
     public void homePageContainsInformationForModules(HomePageModuleTitle moduleTitle) {
-        app().goTo(HomePage.class);
+        homePage.open();
 
-        new HomePage().asserts().assertModuleInformationPresent(moduleTitle);
+        homePage.asserts().assertModuleInformationPresent(moduleTitle);
     }
 
     @Test
     public void shopNowFromHomePageSuccessfully() {
-        app().goTo(HomePage.class);
+        homePage.open();
 
-        new HomePage().map().shopNowAdButton().click();
+        homePage.map().shopNowAdButton().click();
 
-        new ProductPage().asserts().assertProductPageIsOpen();
+        productPage.asserts().assertProductPageIsOpen();
     }
 }

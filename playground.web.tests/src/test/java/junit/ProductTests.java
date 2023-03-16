@@ -1,33 +1,34 @@
 package junit;
 
-import cartpage.CartPage;
-import checkoutpage.CheckoutPage;
+import Pages.cartpage.CartPage;
+import Pages.checkoutpage.CheckoutPage;
 import enums.Brand;
 import enums.Item;
-import homepage.HomePage;
+import Pages.homepage.HomePage;
 import models.Product;
 import org.junit.jupiter.api.Test;
-import productpage.ProductPage;
-import quickviewpage.QuickViewPage;
+import Pages.productpage.ProductPage;
+import Pages.quickviewpage.QuickViewPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
 
 import java.util.ArrayList;
 
 public class ProductTests extends WebTest {
-    private HomePage homePage;
-    private ProductPage productPage;
-    private CartPage cartPage;
-    private CheckoutPage checkoutPage;
-    private QuickViewPage quickView;
+    protected CheckoutPage checkoutPage;
+    protected ProductPage productPage;
+    protected HomePage homePage;
+    protected CartPage cartPage;
+    protected QuickViewPage quickView;
 
-    public ProductTests() {
-        homePage = new HomePage();
-        productPage = new ProductPage();
-        cartPage = new CartPage();
-        checkoutPage = new CheckoutPage();
-        quickView = new QuickViewPage();
+    @Override
+    protected void configure() {
+        super.configure();
+        productPage = app().create(ProductPage.class);
+        homePage = app().create(HomePage.class);
+        cartPage = app().create(CartPage.class);
+        checkoutPage = app().create(CheckoutPage.class);
+        quickView = app().create(QuickViewPage.class);
     }
-
 
     @Test
     public void viewProductInformation() {

@@ -1,42 +1,37 @@
 package facadepattern;
 
-import accountvoucherpage.AccountVoucherPage;
-import accountvoucherpage.RecipientInfo;
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
+import Pages.accountvoucherpage.AccountVoucherPage;
+import models.BaseEShopPage;
+import models.RecipientInfo;
+import Pages.checkoutpage.CheckoutPage;
+import Pages.confirmpage.ConfirmPage;
 import enums.Account;
 import enums.GiftCertificate;
 import enums.MainMenu;
 import enums.MyAccountDropDown;
-import mainnavigationsection.MainNavigationSection;
-import myaccountdropdownsection.MyAccountDropDownSection;
 import solutions.bellatrix.web.services.App;
-import successpage.SuccessPage;
+import Pages.successpage.SuccessPage;
 
 public class PurchaseVoucherFacade {
-    private MainNavigationSection mainNavigationSections;
-    private MyAccountDropDownSection myAccountDropDownSections;
-    private AccountVoucherPage accountVoucherPage;
-    private CheckoutPage checkoutPage;
-    private ConfirmPage confirmPage;
-    private SuccessPage successPage;
+    protected BaseEShopPage baseEShopPage;
+    protected CheckoutPage checkoutPage;
+    protected ConfirmPage confirmPage;
+    protected SuccessPage successPage;
+    protected AccountVoucherPage accountVoucherPage;
 
-    public PurchaseVoucherFacade(MainNavigationSection mainNavigationSections, MyAccountDropDownSection myAccountDropDownSection,
-                                 AccountVoucherPage accountVoucherPage, SuccessPage successPage, CheckoutPage checkoutPage,
-                                 ConfirmPage confirmPage) {
-        this.mainNavigationSections = mainNavigationSections;
-        myAccountDropDownSections = myAccountDropDownSection;
-        this.successPage = successPage;
-        this.accountVoucherPage = accountVoucherPage;
-        this.checkoutPage = checkoutPage;
-        this.confirmPage = confirmPage;
+    public PurchaseVoucherFacade() {
+        baseEShopPage = new BaseEShopPage();
+        checkoutPage = new CheckoutPage();
+        confirmPage = new ConfirmPage();
+        successPage = new SuccessPage();
+        accountVoucherPage = new AccountVoucherPage();
     }
 
     public void purchaseVoucher(RecipientInfo recipient, String fromName, GiftCertificate gift, double amount, Account account) {
         new App().browser().waitForAjax();
-        mainNavigationSections.map().selectMenu(MainMenu.MY_ACCOUNT).hover();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.MY_ACCOUNT).hover();
         new App().browser().waitForAjax();
-        myAccountDropDownSections.map().myAccountMenu(MyAccountDropDown.MY_VOUCHER).click();
+        baseEShopPage.myAccountDropDownSection().map().myAccountMenu(MyAccountDropDown.MY_VOUCHER).click();
 
         accountVoucherPage.fillPurchaseGiftData(recipient, fromName, gift, amount);
         accountVoucherPage.map().continueButton().click();

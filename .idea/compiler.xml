@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="bellatrix.web" />
+        <module name="bellatrix.plugins.video" />
+        <module name="bellatrix.api" />
+        <module name="bellatrix.desktop.tests" />
+        <module name="bellatrix.core" />
+        <module name="bellatrix.android" />
+        <module name="bellatrix.android.tests" />
+        <module name="bellatrix.layout" />
+        <module name="bellatrix.desktop" />
+        <module name="bellatrix.ios.tests" />
+        <module name="bellatrix.web.tests" />
+        <module name="bellatrix.ios" />
+        <module name="bellatrix.plugins.screenshots" />
+        <module name="playground.web.tests" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="bellatrix" target="18" />
+      <module name="bellatrix.android" target="18" />
+      <module name="bellatrix.android.tests" target="18" />
+      <module name="bellatrix.api" target="18" />
+      <module name="bellatrix.core" target="18" />
+      <module name="bellatrix.desktop" target="18" />
+      <module name="bellatrix.desktop.tests" target="18" />
+      <module name="bellatrix.ios" target="18" />
+      <module name="bellatrix.ios.tests" target="18" />
+      <module name="bellatrix.layout" target="18" />
+      <module name="bellatrix.plugins.screenshots" target="18" />
+      <module name="bellatrix.plugins.video" target="18" />
+      <module name="bellatrix.web" target="18" />
+      <module name="bellatrix.web.tests" target="18" />
+      <module name="playground.web.tests" target="19" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

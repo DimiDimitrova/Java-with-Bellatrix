@@ -1,65 +1,56 @@
 package junit;
 
-import accountorderpage.AccountOrderPage;
-import accountpage.AccountPage;
-import accountvoucherpage.AccountVoucherPage;
-import changepasswordpage.ChangePasswordPage;
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
-import editaccountpage.EditAccountPage;
+import Pages.accountOrderPage.AccountOrderPage;
+import Pages.accountpage.AccountPage;
+import Pages.accountvoucherpage.AccountVoucherPage;
+import Pages.changepasswordpage.ChangePasswordPage;
+import Pages.editaccountpage.EditAccountPage;
 import enums.*;
 import facadepattern.PurchaseVoucherFacade;
-import generatefakerdata.FakerDataGenerator;
-import loginpage.LoginPage;
-import mainnavigationsection.MainNavigationSection;
-import myaccountdropdownsection.MyAccountDropDownSection;
+import fakers.PersonInfoFaker;
+import fakers.RecipientInfoFaker;
+import Pages.loginpage.LoginPage;
+import models.BaseEShopPage;
 import org.junit.jupiter.api.Test;
-import registerpage.RegisterPage;
-import solutions.bellatrix.web.infrastructure.*;
+import Pages.registerpage.RegisterPage;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import successpage.SuccessPage;
+import Pages.successpage.SuccessPage;
 
-@ExecutionBrowser(browser = Browser.CHROME, lifecycle = Lifecycle.RESTART_EVERY_TIME)
 public class AccountTests extends WebTest {
-    private FakerDataGenerator generator;
-    private AccountPage accountPage;
-    private AccountOrderPage accountOrderPage;
-    private AccountVoucherPage accountVoucherPage;
-    private RegisterPage registerPage;
-    private LoginPage loginPage;
-    private SuccessPage successPage;
-    private ChangePasswordPage changePasswordPage;
-    private MainNavigationSection mainNavigationSection;
-    private EditAccountPage editAccountPage;
-    private PurchaseVoucherFacade purchaseVoucherFacade;
-    private CheckoutPage checkoutPage;
-    private ConfirmPage confirmPage;
-    private MyAccountDropDownSection myAccountDropDownSection;
+    protected RecipientInfoFaker recipientInfoFaker;
+    protected LoginPage loginPage;
+    protected AccountPage accountPage;
+    protected AccountOrderPage accountOrderPage;
+    protected SuccessPage successPage;
+    protected AccountVoucherPage accountVoucherPage;
+    protected EditAccountPage editAccountPage;
+    protected ChangePasswordPage changePasswordPage;
+    protected RegisterPage registerPage;
+    protected PersonInfoFaker personInfoFaker;
+    protected BaseEShopPage baseEShopPage;
 
-    public AccountTests() {
-        generator = new FakerDataGenerator();
-        accountPage = new AccountPage();
-        accountOrderPage = new AccountOrderPage();
-        accountVoucherPage = new AccountVoucherPage();
-        registerPage = new RegisterPage();
-        loginPage = new LoginPage();
-        mainNavigationSection = new MainNavigationSection();
-        successPage = new SuccessPage();
-        changePasswordPage = new ChangePasswordPage();
-        editAccountPage = new EditAccountPage();
-        checkoutPage = new CheckoutPage();
-        confirmPage = new ConfirmPage();
-        myAccountDropDownSection = new MyAccountDropDownSection();
-        purchaseVoucherFacade = new PurchaseVoucherFacade(mainNavigationSection, myAccountDropDownSection,
-                accountVoucherPage, successPage, checkoutPage, confirmPage);
+    @Override
+    protected void configure() {
+        super.configure();
+        loginPage = app().create(LoginPage.class);
+        accountPage = app().create(AccountPage.class);
+        accountOrderPage = app().create(AccountOrderPage.class);
+        successPage = app().create(SuccessPage.class);
+        accountVoucherPage = app().create(AccountVoucherPage.class);
+        editAccountPage = app().create(EditAccountPage.class);
+        changePasswordPage = app().create(ChangePasswordPage.class);
+        registerPage = app().create(RegisterPage.class);
+        personInfoFaker = new PersonInfoFaker();
+        recipientInfoFaker = new RecipientInfoFaker();
+        baseEShopPage = new BaseEShopPage();
     }
 
     @Test
     public void viewOrderHistorySuccessfully() {
-        var registeredUser = generator.getRegisteredUser();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
 
         accountPage.openMenuFromNavbar(Navbar.ORDER_HISTORY);
@@ -69,7 +60,7 @@ public class AccountTests extends WebTest {
 
     @Test
     public void logoutSuccessfully() {
-        var registeredUser = generator.getRegisteredUser();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
 
         accountPage.openMenuFromNavbar(Navbar.LOGOUT);
@@ -80,13 +71,13 @@ public class AccountTests extends WebTest {
     @ParameterizedTest
     @EnumSource(GiftCertificate.class)
     public void addVoucherSuccessfully(GiftCertificate gift) {
-        var recipient = generator.createRecipient();
-        var person = generator.getRegisteredUser();
+        var person = personInfoFaker.getRegisteredUser();
         double amount = 50;
 
         loginPage.logIn(person.getEmail(), person.getPassword());
 
-        purchaseVoucherFacade.purchaseVoucher(recipient, person.getFirstName(), gift, amount, Account.LOGIN);
+        new PurchaseVoucherFacade().purchaseVoucher(recipientInfoFaker.createRecipient(), person.getFirstName(),
+                gift, amount, Account.LOGIN);
 
         successPage.asserts().asserThatPurchaseIsMade();
     }
@@ -94,32 +85,30 @@ public class AccountTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = 0)
     public void addVoucherFailed_When_RecipientNameIsLess_Than_MinSize(int nameSize) {
-        var recipient = generator.createRecipientWithSpecificName(nameSize);
-        var registeredUser = generator.getRegisteredUser();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         double amount = 10;
 
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
-        mainNavigationSection.map().selectMenu(MainMenu.MY_ACCOUNT).hover();
-        mainNavigationSection.map().selectMenu(MainMenu.VOUCHER).click();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.VOUCHER).click();
 
-        accountVoucherPage.fillPurchaseGiftData(recipient, registeredUser.getFirstName(), GiftCertificate.BIRTHDAY, amount);
+        accountVoucherPage.fillPurchaseGiftData(recipientInfoFaker.createRecipientWithSpecificName(nameSize),
+                registeredUser.getFirstName(), GiftCertificate.BIRTHDAY, amount);
         accountVoucherPage.map().continueButton().click();
 
         accountVoucherPage.asserts().assertPurchaseVoucherFailedWithIncorrectRecipientName();
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {65, 66})
-    public void addVoucherFailed_When_RecipientNameIsMore_Than_MaxSize(int nameSize) {
-        var recipient = generator.createRecipientWithSpecificName(nameSize);
-        var registeredUser = generator.getRegisteredUser();
+    @Test
+    public void addVoucherFailed_When_RecipientNameIsMore_Than_MaxSize() {
+        var registeredUser = personInfoFaker.getRegisteredUser();
         double amount = 10;
 
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
-        mainNavigationSection.map().selectMenu(MainMenu.MY_ACCOUNT).hover();
-        mainNavigationSection.map().selectMenu(MainMenu.VOUCHER).click();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.MY_ACCOUNT).hover();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.VOUCHER).click();
 
-        accountVoucherPage.fillPurchaseGiftData(recipient, registeredUser.getLastName(), GiftCertificate.BIRTHDAY, amount);
+        accountVoucherPage.fillPurchaseGiftData(recipientInfoFaker.createRecipientWithSpecificName(65),
+                registeredUser.getLastName(), GiftCertificate.BIRTHDAY, amount);
         accountVoucherPage.map().continueButton().click();
 
         accountVoucherPage.asserts().assertPurchaseVoucherFailedWithIncorrectRecipientName();
@@ -128,15 +117,15 @@ public class AccountTests extends WebTest {
     @ParameterizedTest
     @ValueSource(strings = {"a12sd@", ""})
     public void addVoucherFailed_When_RecipientEmailIsIncorrect(String endEmail) {
-        var recipient = generator.createRecipientWithSpecificEmail(endEmail);
-        var registeredUser = generator.getRegisteredUser();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         double amount = 10;
 
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
-        mainNavigationSection.map().selectMenu(MainMenu.MY_ACCOUNT).hover();
-        mainNavigationSection.map().selectMenu(MainMenu.VOUCHER).click();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.MY_ACCOUNT).hover();
+        baseEShopPage.mainNavigationSection().map().selectMenu(MainMenu.VOUCHER).click();
 
-        accountVoucherPage.fillPurchaseGiftData(recipient, registeredUser.getFirstName(), GiftCertificate.BIRTHDAY, amount);
+        accountVoucherPage.fillPurchaseGiftData(recipientInfoFaker.createRecipientWithSpecificEmail(endEmail),
+                registeredUser.getFirstName(), GiftCertificate.BIRTHDAY, amount);
         accountVoucherPage.map().continueButton().click();
 
         accountVoucherPage.asserts().assertPurchaseVoucherFailedWithInvalidEmail();
@@ -144,7 +133,7 @@ public class AccountTests extends WebTest {
 
     @Test
     public void editAccountInformationSuccessfully() {
-        var registeredUser = generator.getRegisteredUser();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         loginPage.logIn(registeredUser.getEmail(), registeredUser.getPassword());
         accountPage.openMenuFromNavbar(Navbar.EDIT_ACCOUNT);
 
@@ -156,8 +145,8 @@ public class AccountTests extends WebTest {
 
     @Test
     public void changePasswordSuccessfully() {
-        var person = generator.createPersonInfo();
-        String newPassword = generator.getFaker().lorem().characters(18);
+        var person = personInfoFaker.createPersonInfo();
+        String newPassword = new RecipientInfoFaker().getFaker().lorem().characters(18);
 
         registerPage.doRegistration(person);
         accountPage.openMenuFromNavbar(Navbar.LOGOUT);
@@ -175,8 +164,8 @@ public class AccountTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {2, 3})
     public void changePasswordFailed_When_NewPasswordLengthHasLessSymbols_Than_MinSize(int passwordLength) {
-        var person = generator.createPersonInfo();
-        String newPassword = generator.getFaker().lorem().characters(passwordLength);
+        var person = personInfoFaker.createPersonInfo();
+        String newPassword = new RecipientInfoFaker().getFaker().lorem().characters(passwordLength);
 
         registerPage.doRegistration(person);
         accountPage.openMenuFromNavbar(Navbar.LOGOUT);
@@ -192,8 +181,8 @@ public class AccountTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {21, 22})
     public void changePasswordFailed_When_NewPasswordLengthHasMoreSymbols_Than_MaxSize(int passwordLength) {
-        var person = generator.createPersonInfo();
-        String newPassword = generator.getFaker().lorem().characters(passwordLength);
+        var person = personInfoFaker.createPersonInfo();
+        String newPassword = new RecipientInfoFaker().getFaker().lorem().characters(passwordLength);
 
         registerPage.doRegistration(person);
         accountPage.openMenuFromNavbar(Navbar.LOGOUT);

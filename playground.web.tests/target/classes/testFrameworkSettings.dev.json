@@ -107,5 +107,9 @@
   "urlSettings": {
     "shopUrl": "http://demos.bellatrix.solutions/cart/",
     "accountUrl": "http://demos.bellatrix.solutions/account/"
+  },
+  "lambdaTestSettings": {
+    "registeredUserName": "{env_lambda-username}",
+    "registeredPassword": "{env_lambda-password}"
   }
 }

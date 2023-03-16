@@ -1,77 +1,65 @@
 package junit;
 
-import cartpage.CartPage;
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
+import Pages.cartpage.CartPage;
+import Pages.checkoutpage.CheckoutPage;
 import enums.Account;
 import enums.CategoryInSearchBox;
 import enums.Item;
 import facadepattern.PurchaseFacade;
-import generatefakerdata.FakerDataGenerator;
-import homepage.HomePage;
+import fakers.PaymentAddressFaker;
+import fakers.PersonInfoFaker;
+import Pages.homepage.HomePage;
 import models.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import productpage.ProductPage;
-import solutions.bellatrix.web.infrastructure.Browser;
-import solutions.bellatrix.web.infrastructure.ExecutionBrowser;
-import solutions.bellatrix.web.infrastructure.Lifecycle;
+import Pages.productpage.ProductPage;
 import solutions.bellatrix.web.infrastructure.junit.WebTest;
-import successpage.SuccessPage;
 
 import java.util.ArrayList;
 
-@ExecutionBrowser(browser = Browser.CHROME, lifecycle = Lifecycle.RESTART_EVERY_TIME)
 public class CheckoutTests extends WebTest {
-    private ProductPage productPage;
-    private CheckoutPage checkoutPage;
-    private ConfirmPage confirmPage;
-    private SuccessPage successPage;
-    private HomePage homePage;
-    private CartPage cartPage;
-    private FakerDataGenerator faker;
-    private PurchaseFacade purchaseFacade;
-    public CheckoutTests() {
-        productPage = new ProductPage();
-        checkoutPage = new CheckoutPage();
-        confirmPage = new ConfirmPage();
-        successPage = new SuccessPage();
-        homePage = new HomePage();
-        cartPage = new CartPage();
-        faker = new FakerDataGenerator();
-        purchaseFacade = new PurchaseFacade(homePage, cartPage, productPage, checkoutPage, confirmPage, successPage);
+    protected CheckoutPage checkoutPage;
+    protected ProductPage productPage;
+    protected CartPage cartPage;
+    protected HomePage homePage;
+    protected PersonInfoFaker personInfoFaker;
+    protected PaymentAddressFaker paymentAddressFaker;
+
+    @Override
+    protected void configure() {
+        super.configure();
+        checkoutPage = app().create(CheckoutPage.class);
+        productPage = app().create(ProductPage.class);
+        cartPage = app().create(CartPage.class);
+        homePage = app().create(HomePage.class);
+        personInfoFaker = new PersonInfoFaker();
+        paymentAddressFaker = new PaymentAddressFaker();
     }
 
     @Test
     public void MadePurchaseSuccessfullyWithLoginOption() {
-        var person = faker.getRegisteredUser();
-        var paymentAddress = faker.createPaymentAddress();
-        purchaseFacade.purchaseItem(Item.PALM_TREO_PRO, person, paymentAddress, Account.LOGIN);
+        new PurchaseFacade().purchaseItem(Item.PALM_TREO_PRO, personInfoFaker.getRegisteredUser(),
+                paymentAddressFaker.createPaymentAddress(), Account.LOGIN);
     }
 
     @Test
     public void MakePurchaseSuccessfullyLikeGuest() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentAddress();
-        purchaseFacade.purchaseItem(Item.PALM_TREO_PRO, person, paymentAddress, Account.GUEST_ACCOUNT);
+        new PurchaseFacade().purchaseItem(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentAddress(), Account.GUEST_ACCOUNT);
     }
 
     @Test
     public void MakePurchaseSuccessfullyLikeNewUser() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseItem(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseItem(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0})
     public void MadePurchaseWithRegisterAccountFailed_When_FirstNameHasLessSymbols_Than_MinSize(int firstNameSize) {
-        var person = faker.createPersonWithSpecificFirstName(firstNameSize);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonWithSpecificFirstName(firstNameSize),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectFirstNameValidation();
     }
@@ -79,10 +67,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {33, 34, 45})
     public void MadePurchaseWithRegisterAccountFailed_When_FirstNameHasMoreSymbols_Than_MaxSize(int sizeFirstName) {
-        var person = faker.createPersonWithSpecificFirstName(sizeFirstName);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonWithSpecificFirstName(sizeFirstName),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectFirstNameValidation();
     }
@@ -90,10 +76,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0})
     public void MakePurchaseWithRegisterAccountFailed_When_LastNameHasLessSymbols_Than_MinSize(int lastNameSize) {
-        var person = faker.createPersonWithSpecificLastName(lastNameSize);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonWithSpecificLastName(lastNameSize),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectLastNameValidation();
     }
@@ -101,22 +85,19 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {34, 33})
     public void MakePurchaseWithRegisterAccountFailed_When_LastNameHasMoreSymbols_Than_MaxSize(int sizeLastName) {
-        var person = faker.createPersonWithSpecificLastName(sizeLastName);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.NIKON_D_300, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.NIKON_D_300, personInfoFaker.createPersonWithSpecificLastName(sizeLastName),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectLastNameValidation();
     }
 
     @Test
     public void MakePurchaseWithRegisterAccountFailed_When_UseAlreadyRegisteredEmail() {
-        var person = faker.createPersonInfo();
-        var registeredUser = faker.getRegisteredUser();
+        var person = personInfoFaker.createPersonInfo();
+        var registeredUser = personInfoFaker.getRegisteredUser();
         person.setEmail(registeredUser.getEmail());
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddressFaker.createPaymentAddress(),
+                Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertOrderFailedWithExistEmail();
     }
@@ -124,10 +105,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
     public void MakePurchaseWithRegisterAccountFailed_When_TelephoneSymbolsAreLess_Than_MinSize(int telephoneSize) {
-        var person = faker.createPersonWithSpecificTelephone(telephoneSize);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.IPOD_NANO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.IPOD_NANO, personInfoFaker.createPersonWithSpecificTelephone(telephoneSize),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPhoneValidation();
     }
@@ -135,10 +114,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {33, 34, 35})
     public void MakePurchaseWithRegisterAccountFailed_When_TelephoneSymbolsAreMore_Than_MaxSize(int telephoneSize) {
-        var person = faker.createPersonWithSpecificTelephone(telephoneSize);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.IPOD_NANO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.IPOD_NANO, personInfoFaker.createPersonWithSpecificTelephone(telephoneSize),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPhoneValidation();
     }
@@ -146,10 +123,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     public void MakePurchaseWithRegisterAccountFailed_When_PasswordSymbolsAreLess_Than_MinSize(int password) {
-        var person = faker.createPersonWithSpecificPassword(password);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonWithSpecificPassword(password),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPasswordValidation();
     }
@@ -157,20 +132,16 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {23, 22})
     public void MakePurchaseWithRegisterAccountFailed_When_PasswordSymbolsAreMore_Than_MaxSize(int password) {
-        var person = faker.createPersonWithSpecificPassword(password);
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonWithSpecificPassword(password),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPasswordValidation();
     }
 
     @Test
     public void MakePurchaseFailedWithRegisterAccount_When_ConfirmPasswordIsIncorrect() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.IPOD_NANO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.IPOD_NANO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertPasswordsMismatchValidation();
     }
@@ -178,10 +149,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2})
     public void MakePurchaseFailedWithRegisterAccount_When_AddressHasSymbolsLess_Than_MinSize(int addressSize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificAddress(addressSize);
-
-        purchaseFacade.purchaseValidation(Item.IPOD_SHUFFLE, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.IPOD_SHUFFLE, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificAddress(addressSize), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectAddressValidation();
     }
@@ -189,10 +158,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {129, 130, 200})
     public void MakePurchaseFailedWithRegisterAccount_When_AddressHasSymbolsMore_Than_MaxSize(int addressSize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificAddress(addressSize);
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificAddress(addressSize), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectAddressValidation();
     }
@@ -200,10 +167,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1})
     public void MakePurchaseFailedWithRegisterAccount_When_CityHasSymbolsLess_Than_MinSize(int citySize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificCity(citySize);
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificCity(citySize), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectCityValidation();
     }
@@ -211,10 +176,8 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {129, 130})
     public void MakePurchaseFailedWithRegisterAccount_When_CityHasSymbolsMore_Than_MaxSize(int citySize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificCity(citySize);
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificCity(citySize), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectCityValidation();
     }
@@ -222,10 +185,9 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1})
     public void MakePurchaseFailedWithRegisterAccount_When_PostCodeHasSymbolsLess_Than_MinSize(int postCodeSize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificPostCode(postCodeSize);
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificPostCode(postCodeSize),
+                Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPostCodeValidation();
     }
@@ -233,45 +195,38 @@ public class CheckoutTests extends WebTest {
     @ParameterizedTest
     @ValueSource(ints = {11, 12})
     public void MakePurchaseFailedWithRegisterAccount_When_PostCodeHasSymbolsMore_Than_MaxSize(int postCodeSize) {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSpecificPostCode(postCodeSize);
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSpecificPostCode(postCodeSize),
+                Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectPostCodeValidation();
     }
 
     @Test
     public void MakePurchaseFailedWithRegisterAccount_When_Country_Is_PleaseSelect() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentWithSelectCountryOption();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentWithSelectCountryOption(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertIncorrectCountryValidation();
     }
 
     @Test
     public void MakePurchaseFailedWhenConditionsAreNotCheck() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentAddress();
-
-        purchaseFacade.purchaseValidation(Item.PALM_TREO_PRO, person, paymentAddress, Account.REGISTER_ACCOUNT);
+        new PurchaseFacade().purchaseValidation(Item.PALM_TREO_PRO, personInfoFaker.createPersonInfo(),
+                paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
 
         checkoutPage.asserts().assertTermConditionsRequiredAgreementValidation();
     }
 
     @Test
     public void MakePurchaseFailedWithRegisterAccount_When_ConfirmPasswordIsEmpty() {
-        var person = faker.createPersonInfo();
-        var paymentAddress = faker.createPaymentAddress();
-
+        var person = personInfoFaker.createPersonInfo();
         homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);
         productPage.map().listViewButton().click();
         productPage.addItemToCart(Item.IPOD_NANO);
         cartPage.map().checkoutButton().click();
 
-        checkoutPage.fillAccountDetails(person, paymentAddress, Account.REGISTER_ACCOUNT);
+        checkoutPage.fillAccountDetails(person, paymentAddressFaker.createPaymentAddress(), Account.REGISTER_ACCOUNT);
         checkoutPage.fillPasswordFields(person.getPassword(), "");
         checkoutPage.continuePurchase();
 
@@ -291,19 +246,6 @@ public class CheckoutTests extends WebTest {
 
         checkoutPage.asserts().assertQuantityAndTotalAreCorrect(3, product);
     }
-
-   /* @Test
-    public void RemoveProductSuccessfully() {
-        homePage.searchByCategory(CategoryInSearchBox.COMPONENTS);
-        productPage.map().listViewButton().click();
-        productPage.addItemToCart(Item.PALM_TREO_PRO);
-
-        cartPage.map().checkoutButton().click();
-        new App().browser().waitForAjax();
-        checkoutPage.map().removeButton(Item.PALM_TREO_PRO).click();
-
-        cartPage.asserts().assertShoppingCartIsEmpty();
-    }*/
 
     @Test
     public void UserHaveCorrectInformationForCheckoutEcoTax() {

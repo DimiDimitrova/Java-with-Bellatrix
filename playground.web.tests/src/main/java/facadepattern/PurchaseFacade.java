@@ -1,33 +1,32 @@
 package facadepattern;
 
-import cartpage.CartPage;
-import checkoutpage.CheckoutPage;
-import confirmpage.ConfirmPage;
+import Pages.cartpage.CartPage;
+import Pages.checkoutpage.CheckoutPage;
+import Pages.confirmpage.ConfirmPage;
 import enums.Account;
 import enums.CategoryInSearchBox;
 import enums.Item;
-import homepage.HomePage;
+import Pages.homepage.HomePage;
 import models.PaymentAddressInfo;
-import productpage.ProductPage;
-import registerpage.PersonInfo;
-import successpage.SuccessPage;
+import Pages.productpage.ProductPage;
+import Pages.registerpage.PersonInfo;
+import Pages.successpage.SuccessPage;
 
 public class PurchaseFacade {
-    private HomePage homePage;
-    private CartPage cartPage;
-    private ProductPage productPage;
-    private CheckoutPage checkoutPage;
-    private ConfirmPage confirmPage;
-    private SuccessPage successPage;
+    protected HomePage homePage;
+    protected CheckoutPage checkoutPage;
+    protected ConfirmPage confirmPage;
+    protected CartPage cartPage;
+    protected ProductPage productPage;
+    protected SuccessPage successPage;
 
-    public PurchaseFacade(HomePage homePage, CartPage cartPage, ProductPage productPage,
-                          CheckoutPage checkoutPage, ConfirmPage confirmPage, SuccessPage successPage) {
-        this.homePage = homePage;
-        this.cartPage = cartPage;
-        this.productPage = productPage;
-        this.checkoutPage = checkoutPage;
-        this.confirmPage = confirmPage;
-        this.successPage = successPage;
+    public PurchaseFacade() {
+        homePage = new HomePage();
+        checkoutPage = new CheckoutPage();
+        confirmPage = new ConfirmPage();
+        cartPage = new CartPage();
+        productPage = new ProductPage();
+        successPage = new SuccessPage();
     }
 
     public void purchaseItem(Item product, PersonInfo person, PaymentAddressInfo paymentAddress, Account account) {
